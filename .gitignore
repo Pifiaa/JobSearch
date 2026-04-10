@@ -1,0 +1,32 @@
+# Entorno
+.env
+.env.*
+!.env.example
+
+# Dependencias
+vendor/
+node_modules/
+
+# Docker volumes y datos locales
+docker/data/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs
+.idea/
+.vscode/
+.fleet/
+.zed/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+*.egg-info/
+
+# Logs
+*.log
