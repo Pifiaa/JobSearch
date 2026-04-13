@@ -1,0 +1,50 @@
+<?php
+
+namespace App\Models;
+
+use App\Enums\VacancyModality;
+use App\Enums\VacancyStatus;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\Source;
+
+#[Table('vacancies')]
+#[Fillable([
+    'source_id',
+    'external_id',
+    'title',
+    'company',
+    'city',
+    'department',
+    'country',
+    'modality',
+    'salary_range',
+    'description',
+    'description_hash',
+    'url',
+    'is_active',
+    'cv_score',
+    'cv_score_semantic',
+    'cv_keywords_detail',
+    'status',
+    'published_at',
+    'scraped_at',
+])]
+class Vacancy extends Model
+{
+    protected $casts = [
+        'modality' => VacancyModality::class,
+        'status' => VacancyStatus::class,
+        'cv_keywords_detail' => 'array',
+        'is_active' => 'boolean',
+        'published_at' => 'datetime',
+        'scraped_at' => 'datetime',
+    ];
+
+    public function source(): BelongsTo
+    {
+        return $this->belongsTo(Source::class);
+    }
+}
