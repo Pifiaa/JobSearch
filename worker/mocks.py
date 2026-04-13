@@ -1,0 +1,27 @@
+MOCK_SOURCES = {
+    "computrabajo": {
+        "url": "https://co.computrabajo.com",
+        "headers": {
+            "queries": [
+                "desarrollador",
+                "programador",
+                "ingeniero de software",
+                "dev",
+                "desarrollador de software",
+                "programador de software",
+                "ingeniero de sistemas",
+                "dev de software",
+                "developer",
+                "sistemas",
+                "software",
+            ],
+            "blacklist": ["bairesdev"],
+        }
+    },
+    "ticjob": {
+        "url": "https://ticjob.co",
+        "headers": {
+            "blacklist": ["bairesdev"],
+        }
+    },
+}

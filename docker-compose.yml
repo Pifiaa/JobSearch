@@ -98,6 +98,18 @@ services:
     depends_on:
       - api
 
+  worker:
+    profiles: ["app"]
+    container_name: jobsearch_worker
+    build:
+      context: ./worker
+      dockerfile: Dockerfile
+    volumes:
+      - ./worker:/app
+    networks:
+      - jobsearch
+    command: tail -f /dev/null
+
 networks:
   jobsearch:
     driver: bridge
