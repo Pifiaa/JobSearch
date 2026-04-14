@@ -1,11 +1,10 @@
 from base_scraper import BaseScraper
-from scrapers.computrabajo.extractor import fetch_page
+from scrapers.computrabajo.extractor import fetch_page, fetch_details_parallel
 from scrapers.computrabajo.normalizer import normalize
 from parsers.text import normalize_text
-
+from logger import log
 
 class ComputrabajoScraper(BaseScraper):
-
     @property
     def source_name(self) -> str:
         return "computrabajo"
@@ -18,3 +17,19 @@ class ComputrabajoScraper(BaseScraper):
     def parse(self, raw: list[dict]) -> list[dict]:
         blacklist = self.config.get("blacklist", [])
         return [n for v in raw if (n := normalize(v, blacklist)) is not None]
+
+    def run(self) -> None:
+        import time
+        seen = set()
+        raw = []
+        for query in self.queries:
+            raw.extend(self._fetch_with_dedup(query, seen))
+
+        log(f"[computrabajo] Iniciando fetch_detail paralelo para {len(raw)} vacantes")
+        start = time.time()
+        enriched = fetch_details_parallel(raw)
+        elapsed = time.time() - start
+        log(f"[computrabajo] fetch_detail completado en {elapsed:.1f}s")
+
+        vacancies = self.parse(enriched)
+        self.output(vacancies)
