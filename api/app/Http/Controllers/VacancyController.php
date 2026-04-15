@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use App\Http\Requests\UpdateVacancyStatusRequest;
 use App\Http\Requests\VacancyFilterRequest;
 use App\Models\Vacancy;
@@ -15,7 +13,6 @@ class VacancyController extends Controller
     public function index(VacancyFilterRequest $request): JsonResponse
     {
         $vacancies = $this->vacancyService->listFiltered($request);
-
         return response()->json($vacancies);
     }
 
@@ -23,7 +20,6 @@ class VacancyController extends Controller
     {
         $vacancy = Vacancy::where('is_active', true)->findOrFail($id);
         $vacancy->update(['status' => $request->input('status')]);
-
         return response()->json($vacancy->fresh('source'));
     }
 }

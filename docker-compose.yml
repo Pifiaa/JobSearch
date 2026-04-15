@@ -103,6 +103,9 @@ services:
     restart: unless-stopped
     volumes:
       - ./worker:/app
+      - ./worker/data/cv.pdf:/app/data/cv.pdf:ro
+    environment:
+      - CV_PATH=/app/data/cv.pdf
     networks:
       - jobsearch
     command: tail -f /dev/null

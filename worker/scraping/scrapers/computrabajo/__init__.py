@@ -1,8 +1,8 @@
-from base_scraper import BaseScraper
-from scrapers.computrabajo.extractor import fetch_page, fetch_details_parallel
-from scrapers.computrabajo.normalizer import normalize
-from parsers.text import normalize_text
-from logger import log
+from scraping.base_scraper import BaseScraper
+from scraping.scrapers.computrabajo.extractor import fetch_page, fetch_details_parallel
+from scraping.scrapers.computrabajo.normalizer import normalize
+from scraping.parsers.text import normalize_text
+from core.logger import log
 
 class ComputrabajoScraper(BaseScraper):
     @property

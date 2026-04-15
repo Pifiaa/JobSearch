@@ -1,7 +1,7 @@
 import time
-from logger import log
-from parsers.text import is_blacklisted, normalize_text
-from http_client import get, parse_html
+from core.logger import log
+from scraping.parsers.text import is_blacklisted, normalize_text
+from core.http_client import get, parse_html
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36"

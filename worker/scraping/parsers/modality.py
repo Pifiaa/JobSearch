@@ -1,4 +1,4 @@
-from enums import VacancyModality
+from core.enums import VacancyModality
 
 
 def parse_modality(modality_raw: str) -> VacancyModality:

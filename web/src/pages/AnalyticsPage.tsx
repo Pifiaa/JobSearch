@@ -5,7 +5,7 @@ import SummaryBar from '../components/analytics/SummaryBar'
 import StatusBoard from '../components/analytics/StatusBoard'
 
 export default function AnalyticsPage() {
-  const { skills, companies, salaries, statusTimeline, loading, error, loadAll } = useAnalyticsStore()
+  const { companies, statusTimeline, loading, error, loadAll } = useAnalyticsStore()
 
   useEffect(() => {
     loadAll()
@@ -37,30 +37,7 @@ export default function AnalyticsPage() {
             <p className="text-sm text-gray-400">Cargando analytics...</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Skills */}
-            <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
-              <h2 className="text-sm font-semibold text-gray-700 mb-4">Skills más demandados</h2>
-              {skills.length === 0 ? (
-                <p className="text-sm text-gray-400">Sin datos — disponible después del ranking.</p>
-              ) : (
-                <div className="flex flex-col gap-2">
-                  {skills.slice(0, 15).map((s) => (
-                    <div key={s.skill} className="flex items-center gap-3">
-                      <span className="text-sm text-gray-600 w-28 truncate">{s.skill}</span>
-                      <div className="flex-1 bg-gray-100 rounded-full h-2">
-                        <div
-                          className="bg-blue-500 h-2 rounded-full"
-                          style={{ width: `${(s.total / skills[0].total) * 100}%` }}
-                        />
-                      </div>
-                      <span className="text-xs text-gray-400 w-6 text-right">{s.total}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
+          <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
             {/* Empresas */}
             <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
               <h2 className="text-sm font-semibold text-gray-700 mb-4">Empresas más activas</h2>
@@ -78,24 +55,6 @@ export default function AnalyticsPage() {
                         />
                       </div>
                       <span className="text-xs text-gray-400 w-6 text-right">{c.total}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Salarios */}
-            <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 md:col-span-2">
-              <h2 className="text-sm font-semibold text-gray-700 mb-4">Rangos salariales</h2>
-              {salaries.length === 0 ? (
-                <p className="text-sm text-gray-400">Sin datos — la mayoría de vacantes no publica salario.</p>
-              ) : (
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {salaries.map((s, i) => (
-                    <div key={i} className="bg-gray-50 rounded-lg px-3 py-2">
-                      <p className="text-xs text-gray-400">{s.modality}</p>
-                      <p className="text-sm text-gray-700 font-medium truncate">{s.salary_range}</p>
-                      <p className="text-xs text-gray-400">{s.total} vacantes</p>
                     </div>
                   ))}
                 </div>

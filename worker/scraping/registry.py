@@ -1,4 +1,4 @@
-from base_scraper import BaseScraper
+from scraping.base_scraper import BaseScraper
 
 
 class Registry:

@@ -1,8 +1,8 @@
 import hashlib
-from parsers.location import parse_location
-from parsers.modality import parse_modality
-from parsers.salary import parse_salary
-from parsers.text import is_blacklisted
+from scraping.parsers.location import parse_location
+from scraping.parsers.modality import parse_modality
+from scraping.parsers.salary import parse_salary
+from scraping.parsers.text import is_blacklisted
 
 
 def normalize(raw: dict, blacklist: list[str]) -> dict | None:

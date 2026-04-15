@@ -1,11 +1,11 @@
 import argparse
 import json
 import sys
-from mocks import MOCK_SOURCES
-from registry import Registry
-from runner import Runner
-from scrapers.computrabajo import ComputrabajoScraper
-from scrapers.ticjob import TicjobScraper
+from scraping.mocks import MOCK_SOURCES
+from scraping.registry import Registry
+from scraping.runner import Runner
+from scraping.scrapers.computrabajo import ComputrabajoScraper
+from scraping.scrapers.ticjob import TicjobScraper
 
 registry = Registry()
 registry.register("computrabajo", ComputrabajoScraper)

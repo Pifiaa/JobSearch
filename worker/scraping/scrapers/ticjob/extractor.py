@@ -1,7 +1,7 @@
 import requests
 from requests.cookies import RequestsCookieJar
-from http_client import parse_html
-from logger import log
+from core.http_client import parse_html
+from core.logger import log
 
 SEARCH_URL = "{base_url}/es/search"
 AJAX_URL = "{base_url}/es/ajax/SearchResults"

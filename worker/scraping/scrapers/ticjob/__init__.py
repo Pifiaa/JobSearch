@@ -1,6 +1,6 @@
-from base_scraper import BaseScraper
-from scrapers.ticjob.extractor import fetch_page, init_session
-from scrapers.ticjob.normalizer import normalize
+from scraping.base_scraper import BaseScraper
+from scraping.scrapers.ticjob.extractor import fetch_page, init_session
+from scraping.scrapers.ticjob.normalizer import normalize
 
 
 class TicjobScraper(BaseScraper):

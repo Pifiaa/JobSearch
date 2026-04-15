@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Services;
-
 use App\Http\Requests\VacancyFilterRequest;
 use App\Models\Vacancy;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -16,19 +14,15 @@ class VacancyService
         if ($request->filled('source_id')) {
             $query->where('source_id', $request->integer('source_id'));
         }
-
         if ($request->filled('modality')) {
             $query->where('modality', $request->input('modality'));
         }
-
         if ($request->filled('city')) {
             $query->whereRaw('LOWER(city) LIKE ?', ['%' . strtolower($request->input('city')) . '%']);
         }
-
         if ($request->filled('status')) {
             $query->where('status', $request->input('status'));
         }
-
         if ($request->filled('search')) {
             $term = '%' . strtolower($request->input('search')) . '%';
             $query->where(function ($q) use ($term) {
@@ -36,7 +30,6 @@ class VacancyService
                   ->orWhereRaw('LOWER(description) LIKE ?', [$term]);
             });
         }
-
         if ($request->filled('score_min')) {
             $scoreMin = $request->float('score_min');
             $query->whereNotNull('cv_score')
