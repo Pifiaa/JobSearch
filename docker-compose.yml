@@ -39,6 +39,7 @@ services:
     volumes:
       - ./api:/var/www/html
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./worker/data:/home/dev/projects/jobsearch/worker/data
     networks:
       - jobsearch
     depends_on:
@@ -109,6 +110,27 @@ services:
     networks:
       - jobsearch
     command: tail -f /dev/null
+
+  scheduler:
+    profiles: ["app"]
+    container_name: jobsearch_scheduler
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    command: sh -c "while true; do php artisan schedule:run --no-ansi; sleep 60; done"
+    volumes:
+      - ./api:/var/www/html
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./worker/data:/home/dev/projects/jobsearch/worker/data
+    networks:
+      - jobsearch
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
 networks:
   jobsearch:
     driver: bridge

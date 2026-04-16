@@ -8,6 +8,7 @@ import VacancyFilters from '../components/vacancy/VacancyFilters'
 import VacancyDetail from '../components/vacancy/VacancyDetail'
 import Pagination from '../components/ui/Pagination'
 import SummaryBar from '../components/analytics/SummaryBar'
+import CvUpload from '../components/ui/CvUpload'
 import type { Vacancy } from '../types'
 
 export default function VacanciesPage() {
@@ -76,6 +77,9 @@ export default function VacanciesPage() {
             <Link to="/analytics" className="text-xs text-gray-600 font-medium hover:text-blue-500 transition-colors">
               Analytics →
             </Link>
+            <Link to="/kanban" className="text-xs text-gray-600 font-medium hover:text-blue-500 transition-colors">
+              Seguimiento →
+            </Link>
             {pagination && (
               <span className="text-xs text-gray-600 font-medium bg-gray-100 px-2 py-0.5 rounded-full">
                 {pagination.total} vacantes
@@ -88,6 +92,7 @@ export default function VacanciesPage() {
                 ✓ Scraping encolado
               </span>
             )}
+            <CvUpload />
             <button
               onClick={handleScrape}
               disabled={scraping}
