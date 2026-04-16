@@ -1,8 +1,8 @@
-import { useState } from 'react'
-import type { Vacancy, VacancyStatus } from '../../types'
+import { useEffect, useState } from 'react'
+import type { Vacancy, VacancyStatus, StatusHistoryEntry } from '../../types'
 import ModalityBadge from '../ui/ModalityBadge'
 import StatusBadge from '../ui/StatusBadge'
-import { updateVacancyStatus } from '../../api/vacancies'
+import { updateVacancyStatus, fetchStatusHistory, blacklistCompany } from '../../api/vacancies'
 import { timeAgo } from '../../utils/date'
 
 interface Props {
@@ -21,8 +21,30 @@ const STATUS_OPTIONS: { value: VacancyStatus; label: string }[] = [
   { value: 'descartada', label: 'Descartada' },
 ]
 
+const STATUS_LABELS: Record<VacancyStatus, string> = {
+  nueva:      'Nueva',
+  guardada:   'Guardada',
+  postulada:  'Postulada',
+  observada:  'Observada',
+  descartada: 'Descartada',
+}
+
 export default function VacancyDetail({ vacancy, onClose, onStatusChange, onFilterCompany, onFilterCity }: Props) {
-  const [updating, setUpdating] = useState(false)
+  const [updating, setUpdating]             = useState(false)
+  const [history, setHistory]               = useState<StatusHistoryEntry[]>([])
+  const [loadingHistory, setLoadingHistory] = useState(false)
+  const [blacklisting, setBlacklisting]     = useState(false)
+  const [blacklisted, setBlacklisted]       = useState(false)
+
+  useEffect(() => {
+    setHistory([])
+    setBlacklisted(false)
+    setLoadingHistory(true)
+    fetchStatusHistory(vacancy.id)
+      .then(setHistory)
+      .catch(() => setHistory([]))
+      .finally(() => setLoadingHistory(false))
+  }, [vacancy.id])
 
   async function handleStatusChange(status: VacancyStatus) {
     if (status === vacancy.status) return
@@ -30,8 +52,26 @@ export default function VacancyDetail({ vacancy, onClose, onStatusChange, onFilt
     try {
       const updated = await updateVacancyStatus(vacancy.id, status)
       onStatusChange(updated)
+      const newEntry: StatusHistoryEntry = {
+        id:         Date.now(),
+        vacancy_id: vacancy.id,
+        status,
+        changed_at: new Date().toISOString(),
+      }
+      setHistory((prev) => [...prev, newEntry])
     } finally {
       setUpdating(false)
+    }
+  }
+
+  async function handleBlacklist() {
+    if (!vacancy.company || blacklisted) return
+    setBlacklisting(true)
+    try {
+      await blacklistCompany(vacancy.company)
+      setBlacklisted(true)
+    } finally {
+      setBlacklisting(false)
     }
   }
 
@@ -100,6 +140,29 @@ export default function VacancyDetail({ vacancy, onClose, onStatusChange, onFilt
           </div>
         </div>
 
+        {/* Historial de status */}
+        {(loadingHistory || history.length > 0) && (
+          <div>
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Historial</p>
+            {loadingHistory ? (
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 border border-blue-400 border-t-transparent rounded-full animate-spin" />
+                <span className="text-xs text-gray-400">Cargando...</span>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-1.5">
+                {history.map((entry) => (
+                  <div key={entry.id} className="flex items-center gap-2 text-xs text-gray-500">
+                    <span className="w-1.5 h-1.5 rounded-full bg-gray-300 shrink-0" />
+                    <span className="font-medium text-gray-700">{STATUS_LABELS[entry.status]}</span>
+                    <span className="text-gray-400">{timeAgo(entry.changed_at)}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Meta */}
         <div className="grid grid-cols-2 gap-2 text-sm">
           {vacancy.city && (
@@ -116,12 +179,26 @@ export default function VacancyDetail({ vacancy, onClose, onStatusChange, onFilt
           {vacancy.company && (
             <div className="flex items-center gap-1.5 text-gray-600">
               <span>🏢</span>
-              <button
-                onClick={() => onFilterCompany(vacancy.company!)}
-                className="hover:text-blue-600 hover:underline transition-colors text-left truncate"
-              >
-                {vacancy.company}
-              </button>
+              <div className="flex items-center gap-1.5 min-w-0">
+                <button
+                  onClick={() => onFilterCompany(vacancy.company!)}
+                  className="hover:text-blue-600 hover:underline transition-colors text-left truncate"
+                >
+                  {vacancy.company}
+                </button>
+                <button
+                  onClick={handleBlacklist}
+                  disabled={blacklisting || blacklisted}
+                  title="Agregar a blacklist"
+                  className={`text-xs shrink-0 px-1.5 py-0.5 rounded border transition-all disabled:opacity-50 ${
+                    blacklisted
+                      ? 'text-red-500 border-red-200 bg-red-50'
+                      : 'text-gray-400 border-gray-200 hover:text-red-500 hover:border-red-300'
+                  }`}
+                >
+                  {blacklisted ? '🚫' : '＋🚫'}
+                </button>
+              </div>
             </div>
           )}
           {vacancy.salary_range && (

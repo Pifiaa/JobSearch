@@ -64,3 +64,10 @@ export interface VacancyFilters {
   per_page?: number
   page?: number
 }
+
+export interface StatusHistoryEntry {
+  id: number
+  vacancy_id: number
+  status: VacancyStatus
+  changed_at: string
+}

@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Http\Controllers;
+
 use App\Http\Requests\UpdateVacancyStatusRequest;
 use App\Http\Requests\VacancyFilterRequest;
 use App\Models\Vacancy;
@@ -21,5 +23,11 @@ class VacancyController extends Controller
         $vacancy = Vacancy::where('is_active', true)->findOrFail($id);
         $vacancy->update(['status' => $request->input('status')]);
         return response()->json($vacancy->fresh('source'));
+    }
+
+    public function statusHistory(int $id): JsonResponse
+    {
+        $vacancy = Vacancy::where('is_active', true)->findOrFail($id);
+        return response()->json($vacancy->statusHistory);
     }
 }

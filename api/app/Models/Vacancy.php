@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Table('vacancies')]
 #[ObservedBy(VacancyObserver::class)]
@@ -50,5 +51,10 @@ class Vacancy extends Model
     public function source(): BelongsTo
     {
         return $this->belongsTo(Source::class);
+    }
+
+    public function statusHistory(): HasMany
+    {
+        return $this->hasMany(VacancyStatusHistory::class)->orderBy('changed_at', 'asc');
     }
 }

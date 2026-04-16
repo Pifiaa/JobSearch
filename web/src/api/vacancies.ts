@@ -1,4 +1,4 @@
-import type { PaginatedResponse, Vacancy, VacancyFilters, VacancyStatus } from '../types'
+import type { PaginatedResponse, StatusHistoryEntry, Vacancy, VacancyFilters, VacancyStatus } from '../types'
 
 const BASE_URL = '/api'
 
@@ -53,6 +53,25 @@ export async function triggerScraping(sourceId?: number): Promise<void> {
     ? `${BASE_URL}/scraper/run/${sourceId}`
     : `${BASE_URL}/scraper/run/all`
   const response = await fetch(url, { method: 'POST' })
+  if (!response.ok) {
+    throw new Error(`Error ${response.status}: ${response.statusText}`)
+  }
+}
+
+export async function fetchStatusHistory(id: number): Promise<StatusHistoryEntry[]> {
+  const response = await fetch(`${BASE_URL}/vacancies/${id}/status-history`)
+  if (!response.ok) {
+    throw new Error(`Error ${response.status}: ${response.statusText}`)
+  }
+  return response.json()
+}
+
+export async function blacklistCompany(name: string): Promise<void> {
+  const response = await fetch(`${BASE_URL}/companies/blacklist`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name }),
+  })
   if (!response.ok) {
     throw new Error(`Error ${response.status}: ${response.statusText}`)
   }
