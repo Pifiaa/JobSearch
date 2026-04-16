@@ -24,4 +24,16 @@ MOCK_SOURCES = {
             "blacklist": ["bairesdev"],
         }
     },
+    "elempleo": {
+        "url": "https://www.elempleo.com",
+        "headers": {
+            "queries": [
+                "desarrollador",
+                "programador",
+                "ingeniero-de-software",
+                "developer",
+            ],
+            "blacklist": ["bairesdev"],
+        }
+    },
 }

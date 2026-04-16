@@ -11,10 +11,11 @@ class SourceSeeder extends Seeder
     {
         $sources = [
             [
-                'name'      => 'computrabajo',
-                'url'       => 'https://co.computrabajo.com',
-                'is_active' => true,
-                'headers'   => [
+                'name'       => 'computrabajo',
+                'url'        => 'https://co.computrabajo.com',
+                'is_active'  => true,
+                'rate_limit' => 0,
+                'headers'    => [
                     'queries' => [
                         'desarrollador',
                         'programador',
@@ -25,10 +26,21 @@ class SourceSeeder extends Seeder
                 ],
             ],
             [
-                'name'      => 'ticjob',
-                'url'       => 'https://ticjob.co',
-                'is_active' => true,
-                'headers'   => [
+                'name'       => 'ticjob',
+                'url'        => 'https://ticjob.co',
+                'is_active'  => true,
+                'rate_limit' => 0,
+                'headers'    => [
+                    'blacklist' => ['bairesdev'],
+                ],
+            ],
+            [
+                'name'       => 'elempleo',
+                'url'        => 'https://www.elempleo.com',
+                'is_active'  => true,
+                'rate_limit' => 3,
+                'headers'    => [
+                    'queries'   => ['desarrollador', 'programador', 'ingeniero-de-software', 'developer'],
                     'blacklist' => ['bairesdev'],
                 ],
             ],
@@ -37,6 +49,7 @@ class SourceSeeder extends Seeder
         foreach ($sources as $data) {
             Source::updateOrCreate(
                 ['name' => $data['name']],
+                ['url' => $data['url']],
                 $data
             );
         }

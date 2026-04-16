@@ -6,10 +6,12 @@ from scraping.registry import Registry
 from scraping.runner import Runner
 from scraping.scrapers.computrabajo import ComputrabajoScraper
 from scraping.scrapers.ticjob import TicjobScraper
+from scraping.scrapers.elempleo import ElempleoScraper
 
 registry = Registry()
 registry.register("computrabajo", ComputrabajoScraper)
 registry.register("ticjob", TicjobScraper)
+registry.register("elempleo", ElempleoScraper)
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -19,15 +21,12 @@ def parse_args():
     parser.add_argument("--mock", action="store_true")
     return parser.parse_args()
 
-
 if __name__ == "__main__":
     args = parse_args()
-
     scraper_class = registry.get(args.source)
     if not scraper_class:
         print(json.dumps({"error": f"Fuente desconocida: {args.source}"}))
         sys.exit(1)
-
     if args.mock:
         source = MOCK_SOURCES.get(args.source, {})
         url = source["url"]
@@ -38,6 +37,5 @@ if __name__ == "__main__":
             sys.exit(1)
         url = args.url
         config = json.loads(args.config)
-
     scraper = scraper_class(url, config)
     Runner(scraper).run()
