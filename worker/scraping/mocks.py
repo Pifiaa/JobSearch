@@ -36,4 +36,18 @@ MOCK_SOURCES = {
             "blacklist": ["bairesdev"],
         }
     },
+    "getonboard": {
+        "url": "https://www.getonbrd.com",
+        "headers": {
+            "queries": [
+                "desarrollador",
+                "programador",
+                "laravel",
+                "php",
+                "backend",
+                "fullstack",
+            ],
+            "blacklist": ["bairesdev"],
+        }
+    },
 }

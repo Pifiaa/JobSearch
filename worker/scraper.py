@@ -7,11 +7,13 @@ from scraping.runner import Runner
 from scraping.scrapers.computrabajo import ComputrabajoScraper
 from scraping.scrapers.ticjob import TicjobScraper
 from scraping.scrapers.elempleo import ElempleoScraper
+from scraping.scrapers.getonboard import GetonboardScraper
 
 registry = Registry()
 registry.register("computrabajo", ComputrabajoScraper)
 registry.register("ticjob", TicjobScraper)
 registry.register("elempleo", ElempleoScraper)
+registry.register("getonboard", GetonboardScraper)
 
 def parse_args():
     parser = argparse.ArgumentParser()

@@ -2,9 +2,7 @@ import json
 import sys
 from scraping.base_scraper import BaseScraper
 
-
 class Runner:
-
     def __init__(self, scraper: BaseScraper):
         self.scraper = scraper
 

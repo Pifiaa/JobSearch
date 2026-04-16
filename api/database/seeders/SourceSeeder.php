@@ -44,12 +44,21 @@ class SourceSeeder extends Seeder
                     'blacklist' => ['bairesdev'],
                 ],
             ],
+            [
+                'name'       => 'getonboard',
+                'url'        => 'https://www.getonbrd.com',
+                'is_active'  => true,
+                'rate_limit' => 1,
+                'headers'    => [
+                    'queries'   => ['desarrollador', 'programador', 'laravel', 'php', 'backend', 'fullstack'],
+                    'blacklist' => ['bairesdev'],
+                ],
+            ],
         ];
 
         foreach ($sources as $data) {
             Source::updateOrCreate(
                 ['name' => $data['name']],
-                ['url' => $data['url']],
                 $data
             );
         }
