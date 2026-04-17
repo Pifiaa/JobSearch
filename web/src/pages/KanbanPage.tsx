@@ -1,10 +1,9 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { fetchVacancies, updateVacancyStatus } from '../api/vacancies'
+import { fetchVacancies } from '../api/vacancies'
 import VacancyCard from '../components/vacancy/VacancyCard'
 import VacancyDetail from '../components/vacancy/VacancyDetail'
-import Pagination from '../components/ui/Pagination'
-import type { Vacancy, VacancyStatus, PaginatedResponse } from '../types'
+import type { Vacancy, PaginatedResponse } from '../types'
 
 // ─── tipos ────────────────────────────────────────────────────────────────────
 

@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react'
 
 const STORAGE_KEY = 'jobsearch_last_visit'
 
-export function useNewVacancies(scrapedAt: string | undefined) {
-  const [newCount, setNewCount] = useState(0)
+export function useNewVacancies() {
   const [lastVisit, setLastVisit] = useState<Date | null>(null)
 
   useEffect(() => {
@@ -13,5 +12,5 @@ export function useNewVacancies(scrapedAt: string | undefined) {
     localStorage.setItem(STORAGE_KEY, new Date().toISOString())
   }, [])
 
-  return { newCount, lastVisit }
+  return { lastVisit }
 }

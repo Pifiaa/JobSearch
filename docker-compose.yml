@@ -80,7 +80,7 @@ services:
     depends_on:
       - api
   web:
-    profiles: ["web"]
+    profiles: ["app"]
     container_name: jobsearch_web
     build:
       context: ./web
@@ -88,13 +88,10 @@ services:
     restart: unless-stopped
     ports:
       - "5173:5173"
-    volumes:
-      - ./web:/app
-      - /app/node_modules
     networks:
       - jobsearch
     depends_on:
-      - api
+      - nginx
   worker:
     profiles: ["app"]
     container_name: jobsearch_worker
