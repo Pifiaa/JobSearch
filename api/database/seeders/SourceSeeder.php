@@ -54,6 +54,16 @@ class SourceSeeder extends Seeder
                     'blacklist' => ['bairesdev'],
                 ],
             ],
+            [
+                'name'       => 'buscojobs',
+                'url'        => 'https://www.buscojobs.com.co',
+                'is_active'  => true,
+                'rate_limit' => 3,
+                'headers'    => [
+                    'queries'   => ['desarrollador', 'programador', 'ingeniero-de-software', 'developer', 'backend', 'fullstack'],
+                    'blacklist' => ['bairesdev'],
+                ],
+            ],
         ];
 
         foreach ($sources as $data) {

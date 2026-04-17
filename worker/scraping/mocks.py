@@ -50,4 +50,18 @@ MOCK_SOURCES = {
             "blacklist": ["bairesdev"],
         }
     },
+    "buscojobs": {
+        "url": "https://www.buscojobs.com.co",
+        "headers": {
+            "queries": [
+                "desarrollador",
+                "programador",
+                "ingeniero-de-software",
+                "developer",
+                "backend",
+                "fullstack",
+            ],
+            "blacklist": ["bairesdev"],
+        }
+    },
 }
