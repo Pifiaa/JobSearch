@@ -14,7 +14,7 @@ class UpdateVacancyStatusRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'status' => ['required', 'string', 'in:nueva,guardada,postulada,descartada,observada'],
+            'status' => ['required', 'string', 'in:nueva,guardada,postulada,descartada,observada,no_idoneo'],
         ];
     }
 }
