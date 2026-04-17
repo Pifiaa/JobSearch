@@ -1,19 +1,21 @@
 import type { VacancyStatus } from '../../types'
 
 const LABELS: Record<VacancyStatus, string> = {
-  nueva: 'Nueva',
-  guardada: 'Guardada',
-  postulada: 'Postulada',
+  nueva:      'Nueva',
+  guardada:   'Guardada',
+  postulada:  'Postulada',
   descartada: 'Descartada',
-  observada: 'Observada',
+  observada:  'Observada',
+  no_idoneo:  'No idóneo',
 }
 
 const COLORS: Record<VacancyStatus, string> = {
-  nueva: 'bg-gray-100 text-gray-700',
-  guardada: 'bg-yellow-100 text-yellow-800',
-  postulada: 'bg-blue-100 text-blue-800',
+  nueva:      'bg-gray-100 text-gray-700',
+  guardada:   'bg-yellow-100 text-yellow-800',
+  postulada:  'bg-blue-100 text-blue-800',
   descartada: 'bg-red-100 text-red-700',
-  observada: 'bg-orange-100 text-orange-800',
+  observada:  'bg-orange-100 text-orange-800',
+  no_idoneo:  'bg-purple-100 text-purple-800',
 }
 
 interface Props {

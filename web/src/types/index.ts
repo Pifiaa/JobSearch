@@ -10,6 +10,7 @@ export type VacancyStatus =
   | 'postulada'
   | 'descartada'
   | 'observada'
+  | 'no_idoneo'
 
 export type VacancySort = 'recent' | 'score' | 'company'
 

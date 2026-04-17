@@ -88,6 +88,7 @@ export default function VacancyFilters() {
         <option value="postulada">Postulada</option>
         <option value="descartada">Descartada</option>
         <option value="observada">Observada</option>
+        <option value="no_idoneo">No idóneo</option>
       </select>
 
       <select

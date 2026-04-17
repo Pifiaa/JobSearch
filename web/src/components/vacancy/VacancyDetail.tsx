@@ -19,6 +19,7 @@ const STATUS_OPTIONS: { value: VacancyStatus; label: string }[] = [
   { value: 'postulada',  label: 'Postulada' },
   { value: 'observada',  label: 'Observada' },
   { value: 'descartada', label: 'Descartada' },
+  { value: 'no_idoneo',  label: 'No idóneo' },
 ]
 
 const STATUS_LABELS: Record<VacancyStatus, string> = {
@@ -27,6 +28,7 @@ const STATUS_LABELS: Record<VacancyStatus, string> = {
   postulada:  'Postulada',
   observada:  'Observada',
   descartada: 'Descartada',
+  no_idoneo:  'No idóneo',
 }
 
 export default function VacancyDetail({ vacancy, onClose, onStatusChange, onFilterCompany, onFilterCity }: Props) {

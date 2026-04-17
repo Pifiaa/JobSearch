@@ -85,6 +85,8 @@ class VacancyPersistenceService
     {
         $byExternalId = Vacancy::where('source_id', $sourceId)
             ->where('external_id', $data['external_id'])
+            ->where('is_active', true)
+            ->whereNotIn('status', ['descartada', 'no_idoneo'])
             ->exists();
 
         if ($byExternalId) {
@@ -92,7 +94,10 @@ class VacancyPersistenceService
         }
 
         if (!empty($data['description_hash'])) {
-            return Vacancy::where('description_hash', $data['description_hash'])->exists();
+            return Vacancy::where('description_hash', $data['description_hash'])
+                ->where('is_active', true)
+                ->whereNotIn('status', ['descartada', 'no_idoneo'])
+                ->exists();
         }
 
         return false;
