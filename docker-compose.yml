@@ -106,7 +106,10 @@ services:
       - CV_PATH=/app/data/cv.pdf
     networks:
       - jobsearch
-    command: tail -f /dev/null
+    command: >
+      sh -c "pip install -r /app/requirements.txt --break-system-packages -q &&
+            python -m spacy download es_core_news_md -q &&
+            tail -f /dev/null"
 
   scheduler:
     profiles: ["app"]
