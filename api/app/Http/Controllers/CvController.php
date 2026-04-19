@@ -1,7 +1,7 @@
 <?php
-
 namespace App\Http\Controllers;
 
+use App\Jobs\RescoreVacanciesJob;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -15,7 +15,6 @@ class CvController extends Controller
         if (!file_exists($this->cvPath)) {
             return response()->json(['exists' => false]);
         }
-
         return response()->json([
             'exists'        => true,
             'size_kb'       => round(filesize($this->cvPath) / 1024, 1),
@@ -37,6 +36,8 @@ class CvController extends Controller
             dirname($this->cvPath),
             basename($this->cvPath)
         );
+
+        RescoreVacanciesJob::dispatch();
 
         return response()->json([
             'ok'            => true,
