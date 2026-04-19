@@ -9,6 +9,7 @@ from scraping.scrapers.ticjob import TicjobScraper
 from scraping.scrapers.elempleo import ElempleoScraper
 from scraping.scrapers.getonboard import GetonboardScraper
 from scraping.scrapers.buscojobs import BuscojobsScraper
+from scraping.scrapers.magneto import MagnetoScraper
 
 registry = Registry()
 registry.register("computrabajo", ComputrabajoScraper)
@@ -16,6 +17,7 @@ registry.register("ticjob", TicjobScraper)
 registry.register("elempleo", ElempleoScraper)
 registry.register("getonboard", GetonboardScraper)
 registry.register("buscojobs", BuscojobsScraper)
+registry.register("magneto", MagnetoScraper)
 
 def parse_args():
     parser = argparse.ArgumentParser()

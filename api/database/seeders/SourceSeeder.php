@@ -57,8 +57,18 @@ class SourceSeeder extends Seeder
             [
                 'name'       => 'buscojobs',
                 'url'        => 'https://www.buscojobs.com.co',
-                'is_active'  => true,
+                'is_active'  => false,
                 'rate_limit' => 3,
+                'headers'    => [
+                    'queries'   => ['desarrollador', 'programador', 'ingeniero-de-software', 'developer', 'backend', 'fullstack'],
+                    'blacklist' => ['bairesdev'],
+                ],
+            ],
+            [
+                'name'       => 'magneto',
+                'url'        => 'https://www.magneto365.com',
+                'is_active'  => true,
+                'rate_limit' => 2,
                 'headers'    => [
                     'queries'   => ['desarrollador', 'programador', 'ingeniero-de-software', 'developer', 'backend', 'fullstack'],
                     'blacklist' => ['bairesdev'],

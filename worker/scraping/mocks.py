@@ -64,4 +64,18 @@ MOCK_SOURCES = {
             "blacklist": ["bairesdev"],
         }
     },
+    "magneto": {
+        "url": "https://www.magneto365.com",
+        "headers": {
+            "queries": [
+                "desarrollador",
+                "programador",
+                "ingeniero-de-software",
+                "developer",
+                "backend",
+                "fullstack",
+            ],
+            "blacklist": ["bairesdev"],
+        }
+    },
 }
