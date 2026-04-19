@@ -70,6 +70,10 @@ class BaseScraper(ABC):
             description = vacancy.get("description") or ""
             keyword_result = score_vacancy(self.cv_keywords, description)
             semantic_score = score_semantic(self.cv_text, description)
+            combined = keyword_result.get("cv_score", 0) * 0.6 + semantic_score * 0.4
+            if combined < 1.0:
+                log(f"[{self.source_name}] Descartando por score bajo ({combined:.2f}): {vacancy.get('external_id')}")
+                continue
             ranked.append({
                 **vacancy,
                 **keyword_result,
