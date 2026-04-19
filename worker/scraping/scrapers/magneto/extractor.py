@@ -43,7 +43,10 @@ def fetch_detail(url: str) -> str | None:
         if response.status_code != 200:
             return None
         soup = parse_html(response.text)
-        block = soup.find("div", class_=lambda c: c and "description" in c.lower())
+        # Contenedor principal del detalle
+        block = soup.find("div", class_=lambda c: c and "job_body" in c)
+        if not block:
+            block = soup.find("div", class_=lambda c: c and "job-detail-by-id" in c)
         if not block:
             return None
         return " ".join(block.get_text().split())
