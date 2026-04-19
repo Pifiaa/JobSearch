@@ -92,9 +92,10 @@ def _parse_oferta(o: dict) -> dict:
     ciudad      = o.get("Ciudad") or {}
     depto       = o.get("Departamento") or {}
     teletrabajo = o.get("PermiteTeletrabajo", 0)
+    id_oferta   = o["IdOferta"]
 
     return {
-        "external_id":      str(o["IdOferta"]),
+        "external_id":      str(id_oferta),
         "title":            o.get("CargoVacante", ""),
         "company":          o.get("NombreEmpresa", "") if not o.get("Confidencial") else "",
         "city_raw":         ciudad.get("Nombre", ""),
@@ -103,5 +104,37 @@ def _parse_oferta(o: dict) -> dict:
         "description":      o.get("Descripcion", "") or "",
         "salary_range":     "",
         "published_at_raw": o.get("FechaInicio", ""),
-        "url":              f"{BASE_URL}/oferta-de-trabajo/{o['IdOferta']}",
+        "url":              f"{BASE_URL}/{_slugify(o.get('CargoVacante', ''))}-en-{_slugify(ciudad.get('Nombre', ''))}-ID-{id_oferta}",
     }
+
+def _slugify(text: str) -> str:
+    import unicodedata
+    import re
+    text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore').decode('ascii')
+    text = text.lower().strip()
+    text = re.sub(r'[^\w\s-]', '', text)
+    text = re.sub(r'[\s_]+', '-', text)
+    text = re.sub(r'-+', '-', text)
+    return text.strip('-')
+
+def fetch_detail(url: str) -> dict:
+    try:
+        r = requests.get(url, headers=HEADERS, timeout=30, allow_redirects=True)
+        if r.status_code != 200:
+            return {}
+        soup = BeautifulSoup(r.text, "html.parser")
+        script = soup.find("script", id="__NEXT_DATA__")
+        if not script:
+            return {}
+        data = json.loads(script.text)
+        pp   = data["props"]["pageProps"]
+        oferta = pp.get("oferta")
+        if not oferta:
+            return {}
+        return {
+            "description": oferta.get("Descripcion") or None,
+            "url":         oferta.get("UrlOferta") or url,
+        }
+    except Exception as e:
+        log(f"[buscojobs] Error fetch_detail {url}: {e}")
+        return {}
