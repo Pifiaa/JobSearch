@@ -74,6 +74,40 @@ class SourceSeeder extends Seeder
                     'blacklist' => ['bairesdev'],
                 ],
             ],
+            [
+                'name'       => 'sena',
+                'url'        => 'https://agenciapublicadeempleo.sena.edu.co',
+                'is_active'  => true,
+                'rate_limit' => 2,
+                'headers'    => [
+                    'queries'   => [
+                        'Ingeniero de Sistemas',
+                        'Desarrollador',
+                        'Programador',
+                        'Analista desarrollador',
+                        'Ingeniero de software',
+                    ],
+                    'blacklist' => ['bairesdev'],
+                ],
+            ],
+            [
+                'name'       => 'jobleads',
+                'url'        => 'https://www.jobleads.com',
+                'is_active'  => true,
+                'rate_limit' => 2,
+                'headers'    => [
+                    'queries'   => [
+                        'programador',
+                        'desarrollador',
+                        'software',
+                        'backend',
+                        'fullstack',
+                        'php',
+                        'laravel',
+                    ],
+                    'blacklist' => ['bairesdev'],
+                ],
+            ],
         ];
 
         foreach ($sources as $data) {
