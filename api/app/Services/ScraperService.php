@@ -38,23 +38,41 @@ class ScraperService
 
         $innerCommand = "cd /app && {$command}";
 
+        // Antes se redirigía stderr a /dev/null, lo que ocultaba la causa
+        // real de cualquier fallo (docker exec sin acceso al daemon, socket
+        // muerto, worker caído, etc.) detrás de un genérico "no devolvió
+        // output". Ahora se captura por separado para poder reportarla.
+        $stderrFile = tempnam(sys_get_temp_dir(), 'scraper_stderr_');
+
         if ($mock) {
             $fullCommand = sprintf(
-                'docker exec jobsearch_worker sh -c %s 2>/dev/null',
-                escapeshellarg($innerCommand)
+                'docker exec jobsearch_worker sh -c %s 2>%s',
+                escapeshellarg($innerCommand),
+                escapeshellarg($stderrFile)
             );
         } else {
             $fullCommand = sprintf(
-                'docker exec -e SCRAPER_CONFIG=%s jobsearch_worker sh -c %s 2>/dev/null',
+                'docker exec -e SCRAPER_CONFIG=%s jobsearch_worker sh -c %s 2>%s',
                 escapeshellarg($config),
-                escapeshellarg($innerCommand)
+                escapeshellarg($innerCommand),
+                escapeshellarg($stderrFile)
             );
         }
 
-        $output = shell_exec($fullCommand);
+        exec($fullCommand, $outputLines, $exitCode);
+        $output = implode("\n", $outputLines);
+        $stderr = trim((string) @file_get_contents($stderrFile));
+        @unlink($stderrFile);
 
-        if ($output === null) {
-            throw new RuntimeException("El worker no devolvió output.");
+        if ($exitCode !== 0 || $output === '') {
+            Log::error("ScraperService: fallo al ejecutar el worker", [
+                'source'    => $source->name,
+                'exit_code' => $exitCode,
+                'stderr'    => $stderr,
+            ]);
+
+            $detail = $stderr !== '' ? $stderr : "sin salida (exit code {$exitCode})";
+            throw new RuntimeException("El worker no devolvió output. Detalle: {$detail}");
         }
 
         return $output;

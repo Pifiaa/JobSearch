@@ -14,7 +14,8 @@ HEADERS = {
 }
 
 def fetch_page(base_url: str, query: str, page: int, normalized_blacklist: list[str]) -> list[dict]:
-    url = f"{base_url}/trabajo-de-{query}?pubdate=15&p={page}"
+    # url = f"{base_url}/trabajo-de-{query}?pubdate=15&p={page}"
+    url = f"{base_url}/trabajo-de-{query}?p={page}"
     response = get(url, HEADERS)
     if response is None:
         return []

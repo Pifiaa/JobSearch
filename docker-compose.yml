@@ -49,6 +49,14 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+    healthcheck:
+      test: ['CMD', '/usr/local/bin/healthcheck-docker-socket.sh']
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    labels:
+      - autoheal=true
 
   horizon:
     profiles: ["app"]
@@ -68,6 +76,14 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+    healthcheck:
+      test: ['CMD', '/usr/local/bin/healthcheck-docker-socket.sh']
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    labels:
+      - autoheal=true
 
   nginx:
     profiles: ["app"]
@@ -110,6 +126,11 @@ services:
       - ./worker/data/cv.pdf:/app/data/cv.pdf:ro
     environment:
       - CV_PATH=/app/data/cv.pdf
+      - OLLAMA_URL=http://host.docker.internal:11434/api/generate
+      - OLLAMA_MODEL=llama3.1:8b
+      - OLLAMA_TIMEOUT=60
+      - LLM_ENABLED=true
+      - LLM_MIN_KEYWORDS=2
     networks:
       - jobsearch
     command: >
@@ -136,6 +157,29 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+    healthcheck:
+      test: ['CMD', '/usr/local/bin/healthcheck-docker-socket.sh']
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    labels:
+      - autoheal=true
+
+  # Reinicia automáticamente cualquier contenedor marcado con
+  # `autoheal=true` cuando su healthcheck reporta "unhealthy". Docker por sí
+  # solo no reinicia contenedores por fallo de healthcheck (solo lo marca);
+  # este es el mecanismo estándar y liviano para cerrar ese hueco.
+  autoheal:
+    profiles: ["app"]
+    container_name: jobsearch_autoheal
+    image: willfarrell/autoheal:latest
+    restart: unless-stopped
+    environment:
+      - AUTOHEAL_CONTAINER_LABEL=autoheal
+      - AUTOHEAL_INTERVAL=30
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
 
 networks:
   jobsearch:

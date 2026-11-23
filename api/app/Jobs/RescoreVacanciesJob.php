@@ -1,6 +1,5 @@
 <?php
 namespace App\Jobs;
-
 use App\Enums\VacancyStatus;
 use App\Models\Vacancy;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -29,8 +28,7 @@ class RescoreVacanciesJob implements ShouldQueue
 
         Log::info("RescoreVacanciesJob: re-scoreando", ['total' => $vacancies->count()]);
 
-        $input = json_encode($vacancies->toArray());
-
+        $input   = json_encode($vacancies->toArray());
         $tmpFile = tempnam(sys_get_temp_dir(), 'rescore_') . '.json';
         file_put_contents($tmpFile, $input);
 
@@ -65,6 +63,8 @@ class RescoreVacanciesJob implements ShouldQueue
                 'cv_score'           => $r['cv_score'],
                 'cv_score_semantic'  => $r['cv_score_semantic'],
                 'cv_keywords_detail' => $r['cv_keywords_detail'],
+                'llm_score'          => $r['llm_score'] ?? null,
+                'llm_detail'         => $r['llm_detail'] ?? null,
             ];
 
             if ($combined < 1.0) {

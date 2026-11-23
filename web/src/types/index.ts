@@ -24,6 +24,19 @@ export interface KeywordsDetail {
   missing: string[]
 }
 
+export interface TailoredCv {
+  resumen_profesional: string
+  habilidades_destacadas: string[]
+  sugerencias_bullets: string[]
+  brechas: string[]
+  error: string | null
+}
+
+export interface CoherenceDetail {
+  cargos_detectados: string[]
+  justificacion: string
+}
+
 export interface Vacancy {
   id: number
   source_id: number
@@ -40,6 +53,10 @@ export interface Vacancy {
   cv_score: number | null
   cv_score_semantic: number | null
   cv_keywords_detail: KeywordsDetail | null
+  tailored_cv: TailoredCv | null
+  tailored_cv_generated_at: string | null
+  vacante_coherente: boolean | null
+  coherence_detail: CoherenceDetail | null
   status: VacancyStatus
   status_changed_at: string | null
   published_at: string | null

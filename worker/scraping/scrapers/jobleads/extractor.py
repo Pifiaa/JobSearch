@@ -66,11 +66,25 @@ def fetch_detail(url: str) -> dict:
 
 
 def _parse_listing(base_url: str, html: str) -> list[dict]:
+    # El sitio ahora bloquea las páginas de detalle con Cloudflare Bot
+    # Management (cookie __cf_bm, HTTP 403 incluso con sesión + Referer
+    # correctos). El listado en sí es una SPA de Vue server-renderizada
+    # que sí trae empresa, ciudad, modalidad y salario directamente en
+    # cada tarjeta — así que los sacamos de ahí en vez de depender del
+    # detalle. Lo único que no está disponible así es la descripción
+    # completa; para eso, base_scraper.output() ya usa el título como
+    # respaldo para el scoring cuando description viene vacía.
     soup = parse_html(html)
     vacancies = []
     seen = set()
 
-    for link in soup.find_all("a", href=True):
+    for card in soup.find_all(attrs={"data-testid": "search-job-card"}):
+        link = card.find(attrs={"data-testid": "search-job-card-link"})
+        if link is None:
+            link = card.find("a", href=True)
+        if link is None:
+            continue
+
         href = link.get("href", "")
         if "/job/" not in href:
             continue
@@ -82,15 +96,34 @@ def _parse_listing(base_url: str, html: str) -> list[dict]:
         seen.add(external_id)
 
         title = " ".join(link.get_text(" ", strip=True).split())
+        if not title:
+            h2 = card.find("h2")
+            if h2:
+                title = " ".join(h2.get_text(" ", strip=True).split())
+
+        company_el = card.find(id=lambda i: i and i.endswith("-company"))
+        company, city_raw = _split_company_city(
+            company_el.get_text(" ", strip=True) if company_el else ""
+        )
+
+        modality_el = card.find(attrs={"data-testid": "job-card-chip-work-setting"})
+        modality_raw = modality_el.get_text(" ", strip=True) if modality_el else ""
+
+        salary_el = card.find(attrs={"data-testid": "job-card-chip-salary"})
+        salary_range = salary_el.get_text(" ", strip=True) if salary_el else ""
+
+        date_el = card.find(attrs={"data-testid": "job-card-date"})
+        published_at_raw = date_el.get_text(" ", strip=True) if date_el else ""
+
         vacancies.append({
             "external_id": external_id,
             "url": url,
             "title": title,
-            "company": None,
-            "city_raw": "",
-            "modality_raw": "",
-            "salary_range": "",
-            "published_at_raw": "",
+            "company": company,
+            "city_raw": city_raw,
+            "modality_raw": modality_raw,
+            "salary_range": salary_range,
+            "published_at_raw": published_at_raw,
             "description": None,
         })
 
@@ -98,6 +131,16 @@ def _parse_listing(base_url: str, html: str) -> list[dict]:
             break
 
     return vacancies
+
+
+def _split_company_city(text: str) -> tuple[str | None, str]:
+    """'Happy Agencies • Medellín' -> ('Happy Agencies', 'Medellín')"""
+    if not text:
+        return None, ""
+    parts = [p.strip() for p in text.split("•")]
+    company = parts[0] if parts and parts[0] else None
+    city_raw = parts[1] if len(parts) > 1 else ""
+    return company, city_raw
 
 
 def _extract_title(soup) -> str:

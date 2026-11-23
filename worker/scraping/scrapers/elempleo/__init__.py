@@ -5,8 +5,9 @@ from scraping.scrapers.elempleo.extractor import fetch_page, fetch_detail
 from scraping.scrapers.elempleo.normalizer import normalize
 from core.logger import log
 
-DETAIL_WORKERS = 3
-DETAIL_WAIT    = 0.5
+DETAIL_WORKERS   = 5
+DETAIL_WAIT      = 0.5
+DETAIL_TIME_BUDGET = 900  # segundos máx. para la fase de detalle; si se excede, se corta y se guarda lo ya obtenido
 
 class ElempleoScraper(BaseScraper):
     @property
@@ -37,6 +38,8 @@ class ElempleoScraper(BaseScraper):
 
     def _fetch_details_parallel(self, raw: list[dict]) -> list[dict]:
         results = []
+        start = time.time()
+        budget_exceeded = False
         with ThreadPoolExecutor(max_workers=DETAIL_WORKERS) as executor:
             futures = {executor.submit(fetch_detail, self.base_url, v["url"]): v for v in raw}
             for future in as_completed(futures):
@@ -47,5 +50,13 @@ class ElempleoScraper(BaseScraper):
                 except Exception:
                     vacancy["description"] = None
                 results.append(vacancy)
+
+                if not budget_exceeded and (time.time() - start) > DETAIL_TIME_BUDGET:
+                    budget_exceeded = True
+                    log(f"[elempleo] Presupuesto de tiempo excedido ({DETAIL_TIME_BUDGET}s); "
+                        f"cancelando futuros pendientes, se guardan {len(results)}/{len(raw)} vacantes enriquecidas.")
+                    for pending in futures:
+                        pending.cancel()
+
                 time.sleep(DETAIL_WAIT)
         return results

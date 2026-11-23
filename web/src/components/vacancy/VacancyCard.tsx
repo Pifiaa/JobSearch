@@ -1,6 +1,7 @@
 import type { Vacancy } from '../../types'
 import ModalityBadge from '../ui/ModalityBadge'
 import StatusBadge from '../ui/StatusBadge'
+import CoherenceBadge from '../ui/CoherenceBadge'
 import { timeAgo } from '../../utils/date'
 
 interface Props {
@@ -59,6 +60,7 @@ export default function VacancyCard({ vacancy, onClick, isSelected = false }: Pr
         <div className="flex flex-wrap items-center gap-2">
           <ModalityBadge modality={vacancy.modality} />
           <StatusBadge status={vacancy.status} />
+          <CoherenceBadge vacanteCoherente={vacancy.vacante_coherente} />
           {vacancy.city && vacancy.city !== '4' && (
             <span className="text-xs text-gray-400">📍 {vacancy.city}</span>
           )}

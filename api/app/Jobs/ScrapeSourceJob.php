@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Jobs\EvaluateVacancyCoherenceJob;
 use App\Models\Source;
 use App\Models\Vacancy;
 use App\Services\ScraperService;
@@ -38,10 +39,22 @@ class ScrapeSourceJob implements ShouldQueue
         $result = $persistence->persistMany($vacancies, $this->source);
 
         Log::info("ScrapeSourceJob: finalizado", [
-            'source'  => $this->source->name,
-            'created' => $result['created'],
-            'skipped' => $result['skipped'],
+            'source'      => $this->source->name,
+            'created'     => $result['created'],
+            'reactivated' => $result['reactivated'],
+            'skipped'     => $result['skipped'],
         ]);
+
+        // Lotes chicos: cada EvaluateVacancyCoherenceJob evalúa TODO su lote
+        // en una sola llamada atómica a docker exec (puede tardar minutos u
+        // horas si el lote es grande), y con $tries=1 no hay reintento — si
+        // algo interrumpe el proceso a mitad de camino (rebuild de horizon,
+        // restart del host, etc.), se pierde el lote completo. Partir en
+        // trozos de 20 acota la pérdida máxima a un trozo, no a la corrida
+        // entera.
+        foreach (array_chunk($result['createdIds'], 20) as $chunk) {
+            EvaluateVacancyCoherenceJob::dispatch($chunk);
+        }
 
         $this->notify($result, $telegram);
     }
@@ -63,7 +76,12 @@ class ScrapeSourceJob implements ShouldQueue
         }
 
         $lines   = [];
-        $lines[] = "✅ <b>{$this->source->name}</b> — {$result['created']} nuevas, {$top->count()} relevantes";
+        $summary = "✅ <b>{$this->source->name}</b> — {$result['created']} nuevas";
+        if ($result['reactivated'] > 0) {
+            $summary .= ", {$result['reactivated']} reactivadas";
+        }
+        $summary .= ", {$top->count()} relevantes";
+        $lines[] = $summary;
 
         foreach ($top as $v) {
             $company = $v->company ?? 'Empresa no especificada';

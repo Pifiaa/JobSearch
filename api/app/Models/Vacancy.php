@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Models;
-
 use App\Enums\VacancyModality;
 use App\Enums\VacancyStatus;
 use App\Observers\VacancyObserver;
@@ -31,6 +29,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'cv_score',
     'cv_score_semantic',
     'cv_keywords_detail',
+    'llm_score',
+    'llm_detail',
+    'vacante_coherente',
+    'coherence_detail',
+    'tailored_cv',
+    'tailored_cv_generated_at',
     'status',
     'status_changed_at',
     'published_at',
@@ -39,13 +43,17 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Vacancy extends Model
 {
     protected $casts = [
-        'modality'           => VacancyModality::class,
-        'status'             => VacancyStatus::class,
-        'cv_keywords_detail' => 'array',
-        'is_active'          => 'boolean',
-        'published_at'       => 'datetime',
-        'scraped_at'         => 'datetime',
-        'status_changed_at'  => 'datetime',
+        'modality'                 => VacancyModality::class,
+        'status'                   => VacancyStatus::class,
+        'cv_keywords_detail'       => 'array',
+        'llm_detail'               => 'array',
+        'coherence_detail'         => 'array',
+        'tailored_cv'              => 'array',
+        'is_active'                => 'boolean',
+        'published_at'             => 'datetime',
+        'scraped_at'               => 'datetime',
+        'status_changed_at'        => 'datetime',
+        'tailored_cv_generated_at' => 'datetime',
     ];
 
     public function source(): BelongsTo

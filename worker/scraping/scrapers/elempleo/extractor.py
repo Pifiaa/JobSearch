@@ -35,7 +35,7 @@ def fetch_page(base_url: str, query: str, page: int) -> list[dict]:
 
 def fetch_detail(base_url: str, url: str) -> str | None:
     try:
-        response = requests.get(url, headers=HEADERS, timeout=30)
+        response = requests.get(url, headers=HEADERS, timeout=10)
         if response.status_code != 200:
             return None
         soup = parse_html(response.text)

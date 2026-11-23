@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react'
 import type { Vacancy, VacancyStatus, StatusHistoryEntry } from '../../types'
 import ModalityBadge from '../ui/ModalityBadge'
 import StatusBadge from '../ui/StatusBadge'
+import CoherenceBadge from '../ui/CoherenceBadge'
 import { updateVacancyStatus, fetchStatusHistory, blacklistCompany } from '../../api/vacancies'
 import { timeAgo } from '../../utils/date'
+import TailorCvPanel from './TailorCvPanel'
 
 interface Props {
   vacancy: Vacancy
@@ -95,7 +97,29 @@ export default function VacancyDetail({ vacancy, onClose, onStatusChange, onFilt
         <div className="flex flex-wrap gap-2 items-center">
           <ModalityBadge modality={vacancy.modality} />
           <StatusBadge status={vacancy.status} />
+          <CoherenceBadge vacanteCoherente={vacancy.vacante_coherente} />
         </div>
+
+        {/* Evaluación de coherencia */}
+        {vacancy.vacante_coherente === false && vacancy.coherence_detail && (
+          <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">
+            <p className="text-xs font-semibold text-amber-700 uppercase tracking-wide mb-1.5">
+              ⚠️ Posible mezcla de cargos
+            </p>
+            <p className="text-sm text-amber-800 leading-relaxed">
+              {vacancy.coherence_detail.justificacion}
+            </p>
+            {vacancy.coherence_detail.cargos_detectados.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 mt-2">
+                {vacancy.coherence_detail.cargos_detectados.map((cargo) => (
+                  <span key={cargo} className="text-xs bg-amber-100 text-amber-700 border border-amber-300 px-2 py-0.5 rounded-full">
+                    {cargo}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Scores */}
         {combinedScore !== null ? (
@@ -260,6 +284,12 @@ export default function VacancyDetail({ vacancy, onClose, onStatusChange, onFilt
             <p className="text-sm text-gray-600 whitespace-pre-line leading-relaxed">{vacancy.description}</p>
           </div>
         )}
+
+        {/* CV a medida — solo se genera cuando el usuario pulsa el botón */}
+        <TailorCvPanel
+          vacancy={vacancy}
+          onGenerated={(updated) => onStatusChange({ ...vacancy, ...updated })}
+        />
       </div>
 
       <div className="border-t border-gray-100 px-6 py-4">
