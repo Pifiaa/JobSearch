@@ -33,3 +33,4 @@ worker/mocks/*.json
 
 # Logs
 *.log*:Zone.Identifier
+*.sql
